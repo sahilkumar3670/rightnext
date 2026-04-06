@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hyperlocal Help Platform (NearMe)
 
-## Getting Started
+## 1. Problem Statement
+People struggle to find trusted local helpers quickly for small daily tasks.
 
-First, run the development server:
+## 2. Solution
+A web app where users can post small jobs and nearby helpers can respond with offers.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 3. Target Users
+1. Urban residents needing quick services
+2. Local workers (plumbers, electricians, students)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 4. Core Features (MVP)
+1. User authentication (OTP login)
+2. Post a job (title, description, budget, location)
+3. Browse jobs
+4. Send offers
+5. Ratings & reviews
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 5. Tech Stack
+1. **Frontend:** React / Next.js (App Router, TailwindCSS)
+2. **Backend:** Firebase (Store, Auth configuration provided, Zustand mocked for seamless trial)
+3. **Database:** Firestore (Config file ready)
+4. **Hosting:** Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 6. System Flow
+1. User posts a job
+2. Helpers view and respond
+3. User selects helper
+4. Job is completed
+5. Rating is given
 
-## Learn More
+## 7. Trust & Safety Features
+1. OTP verification
+2. Ratings & reviews
+3. Report & block system
 
-To learn more about Next.js, take a look at the following resources:
+## 8. Future Enhancements
+1. Live chat
+2. Payment integration
+3. AI price suggestions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Running the Application Locally
 
-## Deploy on Vercel
+1. Install modules (if not installed):
+   ```bash
+   npm install
+   ```
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+3. Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*Note: For the MVP, OTP Login allows any 10-digit number and the OTP is mocked as `1234`.*
