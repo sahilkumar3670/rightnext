@@ -8,9 +8,6 @@ import {
   User as UserIcon, 
   Phone, 
   MapPin, 
-  Pencil, 
-  Check, 
-  X, 
   Settings, 
   Briefcase, 
   Trophy, 
@@ -24,8 +21,6 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function ProfilePage() {
   const { user, jobs, offers, updateUserProfile, setUser, authLoading } = useStore();
   const [loading, setLoading] = useState(false);
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [tempName, setTempName] = useState(user?.name || "");
 
   if (authLoading) {
     return (
@@ -38,19 +33,7 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-  const handleUpdateName = async () => {
-    if (tempName.trim().length < 2) return toast.error("Name too short.");
-    setLoading(true);
-    try {
-      await updateUserProfile(user.id, { name: tempName.trim() });
-      toast.success("Identity updated");
-      setIsEditingName(false);
-    } catch (err) {
-      toast.error("Failed to update");
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const handleLogout = async () => {
     try {
@@ -97,49 +80,15 @@ export default function ProfilePage() {
 
             <div className="flex-1 pb-2">
               <div className="flex items-center gap-3 flex-wrap">
-                <AnimatePresence mode="wait">
-                  {isEditingName ? (
-                    <motion.div 
-                      key="edit"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 10 }}
-                      className="flex items-center gap-2"
-                    >
-                      <input 
-                        type="text" 
-                        value={tempName}
-                        onChange={e => setTempName(e.target.value)}
-                        className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 px-4 py-2 rounded-xl text-xl font-black outline-none focus:ring-2 focus:ring-blue-500/20"
-                        autoFocus
-                      />
-                      <button onClick={handleUpdateName} className="p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-500/20">
-                        <Check className="w-5 h-5" />
-                      </button>
-                      <button onClick={() => { setIsEditingName(false); setTempName(user.name); }} className="p-2.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-xl">
-                        <X className="w-5 h-5" />
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <motion.div 
-                      key="view"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 10 }}
-                      className="flex items-center gap-4"
-                    >
-                      <h1 className="text-3xl sm:text-5xl font-black text-zinc-900 dark:text-white tracking-tight">
-                        {user.name}
-                      </h1>
-                      <button 
-                        onClick={() => setIsEditingName(true)}
-                        className="p-3 text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                      >
-                        <Pencil className="w-6 h-6" />
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <motion.div 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-center gap-4"
+                >
+                  <h1 className="text-3xl sm:text-5xl font-black text-zinc-900 dark:text-white tracking-tight">
+                    {user.name}
+                  </h1>
+                </motion.div>
               </div>
               <p className="flex items-center gap-2 text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2 px-1">
                 <MapPin className="w-4 h-4 text-zinc-400" /> {user.location}

@@ -73,7 +73,11 @@ export default function BrowseJobs() {
 
   const handleSendOffer = async (e: React.FormEvent, jobId: string) => {
     e.preventDefault();
-    if (!user) return toast.error('Log in required');
+    if (!user) {
+      toast.error('Log in required');
+      router.push('/login');
+      return;
+    }
     if (!offerPrice) return toast.error('Enter a price');
 
     const message = offerMessage || "Hi, I'm interested in this task and ready to help.";
@@ -318,7 +322,11 @@ export default function BrowseJobs() {
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
                                   onClick={() => {
-                                    if (!user) return toast.error('Login required');
+                                    if (!user) {
+                                      toast.error('Login required to send offers');
+                                      router.push('/login');
+                                      return;
+                                    }
                                     setSelectedJobId(job.id);
                                     setOfferPrice(job.budget.toString());
                                   }}

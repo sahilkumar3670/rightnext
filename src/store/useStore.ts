@@ -25,7 +25,7 @@ interface StoreState {
   setAuthLoading: (loading: boolean) => void;
   addReview: (review: Omit<Review, 'id'>) => Promise<void>;
   // Actions that will sync with Firebase
-  fetchOrCreateUser: (uid: string, phone: string) => Promise<User>;
+  fetchOrCreateUser: (uid: string, defaultName: string) => Promise<User>;
   updateUserProfile: (uid: string, data: Partial<User>) => Promise<void>;
   addJob: (job: Omit<Job, 'id'>) => Promise<void>;
   addOffer: (offer: Omit<Offer, 'id'>) => Promise<void>;
@@ -52,7 +52,7 @@ export const useStore = create<StoreState>((set, get) => ({
     await addDoc(collection(db, 'reviews'), review);
   },
 
-  fetchOrCreateUser: async (uid, phone) => {
+  fetchOrCreateUser: async (uid, defaultName) => {
     let userData: User;
     if (db) {
       const userRef = doc(db, 'users', uid);
@@ -63,20 +63,22 @@ export const useStore = create<StoreState>((set, get) => ({
         // Create new user in DB
         userData = {
           id: uid,
-          name: 'New User',
-          phone: phone,
+          name: defaultName,
+          phone: '',
           location: 'Adding Soon',
           role: 'user',
           rating: 5.0,
           isVerified: false,
-        };
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        } as unknown as User;
         await setDoc(userRef, userData);
       }
     } else {
       userData = {
         id: uid,
-        name: 'Mock User',
-        phone: phone,
+        name: defaultName,
+        phone: '',
         location: 'Mock City',
         role: 'user',
         rating: 5.0,
@@ -88,64 +90,76 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   updateUserProfile: async (uid, data) => {
+    const updatePayload = { ...data, updatedAt: new Date().toISOString() };
     if (db) {
       const userRef = doc(db, 'users', uid);
-      await updateDoc(userRef, data);
+      await updateDoc(userRef, updatePayload);
     }
     set((state) => ({
-      user: state.user && state.user.id === uid ? { ...state.user, ...data } : state.user
+      user: state.user && state.user.id === uid ? { ...state.user, ...updatePayload } : state.user
     }));
   },
 
   addJob: async (jobData) => {
+    const timestamp = new Date().toISOString();
+    const finalData = { ...jobData, createdAt: timestamp, updatedAt: timestamp };
     if (db) {
-      await addDoc(collection(db, 'jobs'), jobData);
+      await addDoc(collection(db, 'jobs'), finalData);
     } else {
       console.warn("Firebase not configured. Using local state.");
-      const mockJob: Job = { ...jobData, id: Math.random().toString(36).substring(7) } as Job;
+      const mockJob: Job = { ...finalData, id: Math.random().toString(36).substring(7) } as Job;
       set((state) => ({ jobs: [mockJob, ...state.jobs] }));
     }
   },
 
   addOffer: async (offerData) => {
+    const timestamp = new Date().toISOString();
+    const finalData = { ...offerData, createdAt: timestamp, updatedAt: timestamp };
     if (db) {
-      await addDoc(collection(db, 'offers'), offerData);
+      await addDoc(collection(db, 'offers'), finalData);
     } else {
       console.warn("Firebase not configured. Using local state.");
-      const mockOffer: Offer = { ...offerData, id: Math.random().toString(36).substring(7) } as Offer;
+      const mockOffer: Offer = { ...finalData, id: Math.random().toString(36).substring(7) } as Offer;
       set((state) => ({ offers: [mockOffer, ...state.offers] }));
     }
   },
 
   updateJob: async (jobId, status) => {
+    const updatePayload: any = { status, updatedAt: new Date().toISOString() };
+    if (status === 'cancelled') updatePayload.cancelledAt = new Date().toISOString();
+    
     if (db) {
       const jobRef = doc(db, 'jobs', jobId);
-      await updateDoc(jobRef, { status });
+      await updateDoc(jobRef, updatePayload);
     } else {
       set((state) => ({
-        jobs: state.jobs.map(j => j.id === jobId ? { ...j, status } : j)
+        jobs: state.jobs.map(j => j.id === jobId ? { ...j, ...updatePayload } : j)
       }));
     }
   },
 
   deleteJob: async (jobId) => {
+    const updatePayload = { status: 'cancelled', updatedAt: new Date().toISOString(), cancelledAt: new Date().toISOString() };
     if (db) {
       const jobRef = doc(db, 'jobs', jobId);
-      await updateDoc(jobRef, { status: 'cancelled' });
+      await updateDoc(jobRef, updatePayload);
     } else {
       set((state) => ({
-        jobs: state.jobs.map(j => (j.id === jobId ? { ...j, status: 'cancelled' as const } : j))
+        jobs: state.jobs.map(j => (j.id === jobId ? { ...j, ...updatePayload } as Job : j))
       }));
     }
   },
 
   updateOffer: async (offerId, status) => {
+    const updatePayload: any = { status, updatedAt: new Date().toISOString() };
+    if (status === 'cancelled') updatePayload.cancelledAt = new Date().toISOString();
+    
     if (db) {
       const offerRef = doc(db, 'offers', offerId);
-      await updateDoc(offerRef, { status });
+      await updateDoc(offerRef, updatePayload);
     } else {
       set((state) => ({
-        offers: state.offers.map(o => o.id === offerId ? { ...o, status } : o)
+        offers: state.offers.map(o => o.id === offerId ? { ...o, ...updatePayload } : o)
       }));
     }
   },
