@@ -69,8 +69,8 @@ export const useStore = create<StoreState>((set, get) => ({
           role: 'user',
           rating: 5.0,
           isVerified: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
         } as unknown as User;
         await setDoc(userRef, userData);
       }
@@ -90,7 +90,7 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   updateUserProfile: async (uid, data) => {
-    const updatePayload = { ...data, updatedAt: new Date().toISOString() };
+    const updatePayload = { ...data, updatedAt: Date.now() };
     if (db) {
       const userRef = doc(db, 'users', uid);
       await updateDoc(userRef, updatePayload);
@@ -101,7 +101,7 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   addJob: async (jobData) => {
-    const timestamp = new Date().toISOString();
+    const timestamp = Date.now();
     const finalData = { ...jobData, createdAt: timestamp, updatedAt: timestamp };
     if (db) {
       await addDoc(collection(db, 'jobs'), finalData);
@@ -113,7 +113,7 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   addOffer: async (offerData) => {
-    const timestamp = new Date().toISOString();
+    const timestamp = Date.now();
     const finalData = { ...offerData, createdAt: timestamp, updatedAt: timestamp };
     if (db) {
       await addDoc(collection(db, 'offers'), finalData);
@@ -125,8 +125,8 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   updateJob: async (jobId, status) => {
-    const updatePayload: any = { status, updatedAt: new Date().toISOString() };
-    if (status === 'cancelled') updatePayload.cancelledAt = new Date().toISOString();
+    const updatePayload: any = { status, updatedAt: Date.now() };
+    if (status === 'cancelled') updatePayload.cancelledAt = Date.now();
     
     if (db) {
       const jobRef = doc(db, 'jobs', jobId);
@@ -139,7 +139,7 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   deleteJob: async (jobId) => {
-    const updatePayload = { status: 'cancelled', updatedAt: new Date().toISOString(), cancelledAt: new Date().toISOString() };
+    const updatePayload = { status: 'cancelled', updatedAt: Date.now(), cancelledAt: Date.now() };
     if (db) {
       const jobRef = doc(db, 'jobs', jobId);
       await updateDoc(jobRef, updatePayload);
@@ -151,8 +151,8 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   updateOffer: async (offerId, status) => {
-    const updatePayload: any = { status, updatedAt: new Date().toISOString() };
-    if (status === 'cancelled') updatePayload.cancelledAt = new Date().toISOString();
+    const updatePayload: any = { status, updatedAt: Date.now() };
+    if (status === 'cancelled') updatePayload.cancelledAt = Date.now();
     
     if (db) {
       const offerRef = doc(db, 'offers', offerId);

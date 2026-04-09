@@ -64,7 +64,11 @@ export default function BrowseJobs() {
     return Number((R * c).toFixed(1));
   };
 
-  const formatTime = (ms: number) => {
+  const formatTime = (time: number | string) => {
+    if (!time) return 'New';
+    const ms = typeof time === 'string' ? new Date(time).getTime() : time;
+    if (isNaN(ms)) return 'New';
+    
     const diff = Math.max(0, Date.now() - ms);
     const hours = Math.floor(diff / 3600000);
     if (hours < 1) return 'New';
