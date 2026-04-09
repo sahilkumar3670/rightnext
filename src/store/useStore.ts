@@ -10,7 +10,8 @@ import {
   doc,
   updateDoc,
   getDoc,
-  setDoc
+  setDoc,
+  deleteDoc
 } from 'firebase/firestore';
 
 interface StoreState {
@@ -29,6 +30,7 @@ interface StoreState {
   addJob: (job: Omit<Job, 'id'>) => Promise<void>;
   addOffer: (offer: Omit<Offer, 'id'>) => Promise<void>;
   updateJob: (jobId: string, status: Job['status']) => Promise<void>;
+  deleteJob: (jobId: string) => Promise<void>;
   updateOffer: (offerId: string, status: Offer['status']) => Promise<void>;
   // Listener initializers
   initFirebaseListeners: () => () => void;
@@ -122,6 +124,17 @@ export const useStore = create<StoreState>((set, get) => ({
     } else {
       set((state) => ({
         jobs: state.jobs.map(j => j.id === jobId ? { ...j, status } : j)
+      }));
+    }
+  },
+
+  deleteJob: async (jobId) => {
+    if (db) {
+      const jobRef = doc(db, 'jobs', jobId);
+      await updateDoc(jobRef, { status: 'cancelled' });
+    } else {
+      set((state) => ({
+        jobs: state.jobs.map(j => (j.id === jobId ? { ...j, status: 'cancelled' as const } : j))
       }));
     }
   },

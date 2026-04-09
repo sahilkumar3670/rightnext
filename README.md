@@ -1,4 +1,4 @@
-# Hyperlocal Help Platform (NearMe)
+# Hyperlocal Help Platform (RightNext)
 
 ## 1. Problem Statement
 People struggle to find trusted local helpers quickly for small daily tasks.

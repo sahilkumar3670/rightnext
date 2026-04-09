@@ -111,7 +111,7 @@ export default function Login() {
     <div className="max-w-md mx-auto mt-20 p-8 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-800">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-          Welcome to NearMe
+          Welcome to RightNext
         </h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           {step === 1 ? 'Enter your phone number to sign in' : 'Verify your phone number'}

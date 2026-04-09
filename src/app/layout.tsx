@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import FirebaseInit from "@/components/FirebaseInit";
 import NameModal from "@/components/NameModal";
 import FloatingFeedback from "@/components/FloatingFeedback";
+import { Analytics } from "@vercel/analytics/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NearMe - Hyperlocal Help Platform",
+  title: "RightNext - Hyperlocal Help Platform",
   description: "Find trusted local helpers quickly for small daily tasks.",
 };
 
@@ -38,6 +39,7 @@ export default function RootLayout({
         </main>
         <FloatingFeedback />
         <Toaster position="bottom-right" />
+        <Analytics />
       </body>
     </html>
   );

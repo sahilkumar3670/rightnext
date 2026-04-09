@@ -67,7 +67,7 @@ export default function FloatingFeedback() {
                 <h3 className="text-lg font-black tracking-tight flex items-center gap-2 uppercase text-[12px]">
                   <Sparkles className="w-4 h-4 text-blue-400 dark:text-white" /> Give us suggestions
                 </h3>
-                <p className="opacity-70 text-[10px] font-bold uppercase tracking-widest mt-1">Help us make NearMe better</p>
+                <p className="opacity-70 text-[10px] font-bold uppercase tracking-widest mt-1">Help us make RightNext better</p>
               </div>
             </div>
 

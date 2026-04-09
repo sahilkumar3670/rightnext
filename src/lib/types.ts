@@ -20,7 +20,7 @@ export interface Job {
   creatorName: string;
   creatorPhone: string;
   creatorVerified: boolean;
-  status: 'open' | 'assigned' | 'completed';
+  status: 'open' | 'assigned' | 'completed' | 'cancelled';
   createdAt: number;
   scheduledDate?: string;
 }

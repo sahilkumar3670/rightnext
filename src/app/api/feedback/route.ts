@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     // Email content
     const mailOptions = {
-      from: `"NearMe Feedback" <${process.env.SMTP_USER}>`,
+      from: `"RightNext Feedback" <${process.env.SMTP_USER}>`,
       to: 'sahilkumarsml@gmail.com',
       subject: `New Feedback: ${type || 'Suggestion'} from ${name || 'User'}`,
       html: `

@@ -6,11 +6,12 @@ import { Search, MapPin, IndianRupee, Clock, ShieldCheck, CheckCircle2, Star, Ca
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import ConfirmModal from '@/components/ConfirmModal';
 
 const LOCAL_RADIUS_KM = 50; // Strict limit for "local" jobs
 
 export default function BrowseJobs() {
-  const { jobs, user, reviews, addOffer } = useStore();
+  const { jobs, user, reviews, addOffer, deleteJob } = useStore();
   const router = useRouter();
 
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
@@ -19,6 +20,17 @@ export default function BrowseJobs() {
   const [searchQuery, setSearchQuery] = useState('');
   const [userCoords, setUserCoords] = useState<{lat: number, lng: number} | null>(null);
   const [isLocalOnly, setIsLocalOnly] = useState(true);
+  const [jobToCancel, setJobToCancel] = useState<string | null>(null);
+
+  const handleCancelPost = async () => {
+    if (!jobToCancel) return;
+    try {
+      await deleteJob(jobToCancel);
+      toast.success('Post cancelled successfully');
+    } catch {
+      toast.error('Failed to cancel post');
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && navigator.geolocation) {
@@ -226,7 +238,7 @@ export default function BrowseJobs() {
                               );
                             })()}
                             
-                            <div className="hidden lg:flex items-center gap-1 px-1.5 py-0.5 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-100 dark:border-zinc-700/50">
+                            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-100 dark:border-zinc-700/50">
                               <MapPin className="w-2.5 h-2.5 text-zinc-400" />
                               <a 
                                 href={job.coordinates ? `https://www.google.com/maps?q=${job.coordinates.lat},${job.coordinates.lng}` : `https://www.google.com/maps/search/${encodeURIComponent(job.location)}`}
@@ -261,8 +273,16 @@ export default function BrowseJobs() {
                         </div>
 
                         {user?.id === job.creatorId ? (
-                          <div className="w-full flex items-center justify-center gap-1 py-2 text-[8px] font-black text-zinc-400 dark:text-zinc-500 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-700 uppercase tracking-widest">
-                            OWN POST
+                          <div className="w-full flex flex-col gap-2">
+                            <div className="w-full flex items-center justify-center gap-1 py-1.5 text-[8px] font-black text-zinc-400 dark:text-zinc-500 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-700 uppercase tracking-widest">
+                              OWN POST
+                            </div>
+                            <button 
+                              onClick={() => setJobToCancel(job.id)}
+                              className="w-full py-1.5 text-[8px] font-black text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 rounded-lg transition-colors uppercase tracking-[0.2em]"
+                            >
+                              Cancel Post
+                            </button>
                           </div>
                         ) : (
                           <AnimatePresence mode='wait'>
@@ -307,7 +327,7 @@ export default function BrowseJobs() {
                                   Send Offer
                                 </motion.button>
                                 <button 
-                                  onClick={() => toast.success('Reported to NearMe team. We will review this shortly.')}
+                                  onClick={() => toast.success('Reported to RightNext team. We will review this shortly.')}
                                   className="w-full py-1.5 text-[7px] font-black text-zinc-400 group-hover:text-red-400 transition-colors uppercase tracking-[0.2em]"
                                 >
                                   🚩 Report
@@ -325,6 +345,15 @@ export default function BrowseJobs() {
           )}
         </AnimatePresence>
       </motion.div>
+
+      <ConfirmModal 
+        isOpen={!!jobToCancel}
+        onClose={() => setJobToCancel(null)}
+        onConfirm={handleCancelPost}
+        title="Cancel Post"
+        subtitle="Are you sure you want to cancel this post? It will no longer be visible to helpers."
+        confirmText="Cancel Post"
+      />
     </div>
   );
 }

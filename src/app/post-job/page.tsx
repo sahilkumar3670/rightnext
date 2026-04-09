@@ -184,13 +184,22 @@ export default function PostJob() {
                />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] text-sm font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-500/30 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
-            >
-              {loading ? "Optimizing Post..." : <><ArrowRight className="w-5 h-5" /> Post my request</>}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                type="button"
+                onClick={() => router.push('/jobs')}
+                className="w-full sm:w-1/3 py-5 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white rounded-[2rem] text-sm font-black uppercase tracking-[0.1em] active:scale-95 transition-all flex items-center justify-center disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full sm:w-2/3 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] text-sm font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-500/30 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+              >
+                {loading ? "Optimizing Post..." : <><ArrowRight className="w-5 h-5" /> Post my request</>}
+              </button>
+            </div>
           </form>
         </motion.div>
 
@@ -228,7 +237,7 @@ export default function PostJob() {
                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center text-green-600">
                  <CheckCircle2 className="w-5 h-5" />
                </div>
-               <h4 className="text-xs font-black uppercase tracking-widest">NearMe Guarantee</h4>
+               <h4 className="text-xs font-black uppercase tracking-widest">RightNext Guarantee</h4>
              </div>
              <p className="text-[11px] text-zinc-500 font-medium leading-relaxed">
                All posts are strictly restricted to your local radius. Your data is encrypted and only shared with the person you choose to hire.
