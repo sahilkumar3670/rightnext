@@ -36,7 +36,9 @@ export default function PostJob() {
   });
   const [coordinates, setCoordinates] = useState<{lat: number, lng: number} | null>(null);
 
-  if (!user) return null;
+  const minDate = new Date().toISOString().split('T')[0];
+  const maxDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,6 +46,13 @@ export default function PostJob() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast.error('Please log in to post your request');
+      router.push('/login');
+      return;
+    }
+
     if (!formData.title || !formData.description || !formData.budget) {
       toast.error('Please fill in the core details.');
       return;
@@ -132,20 +141,32 @@ export default function PostJob() {
                       type="number"
                       name="budget"
                       required
+                      min="1"
+                      step="1"
                       placeholder="500"
                       className="w-full pl-12 pr-6 py-4 text-xl font-black bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
                       value={formData.budget}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        // Strip non-digits and leading zeros to force natural numbers only (1, 2, 3...)
+                        const val = e.target.value.replace(/\D/g, '').replace(/^0+/, '');
+                        setFormData({ ...formData, budget: val });
+                      }}
+                      onKeyDown={(e) => {
+                        if (['-', '.', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
+                      }}
                     />
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 px-1">When (Optional)</label>
+                  <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 px-1">When (Required)</label>
                   <div className="relative">
                     <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                     <input
                       type="date"
                       name="scheduledDate"
+                      required
+                      min={minDate}
+                      max={maxDate}
                       className="w-full pl-12 pr-6 py-4 text-sm font-bold bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
                       value={formData.scheduledDate}
                       onChange={handleChange}
@@ -197,7 +218,9 @@ export default function PostJob() {
                 disabled={loading}
                 className="w-full sm:w-2/3 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] text-sm font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-500/30 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
               >
-                {loading ? "Optimizing Post..." : <><ArrowRight className="w-5 h-5" /> Post my request</>}
+                {loading ? "Optimizing Post..." : (
+                  !user ? <><ArrowRight className="w-5 h-5" /> Login to Post</> : <><ArrowRight className="w-5 h-5" /> Post my request</>
+                )}
               </button>
             </div>
           </form>
